@@ -1,0 +1,44 @@
+---
+kind: pipeline
+type: kubernetes
+name: build
+
+trigger:
+  event:
+    exclude:
+      - promote
+      - rollback
+
+workspace:
+  path: ~/docker-glibc-builder
+
+steps:
+  - name: Build package
+    image: docker:git
+    environment:
+      GLIBC_VERSION: 2.31
+    volumes:
+      - name: dockersock
+        path: /var/run
+    commands:
+      - mkdir -p artefacts
+      - docker build . --tag sgerrand/glibc-builder:$DRONE_COMMIT
+      - docker run --rm --env STDOUT=1 sgerrand/glibc-builder:$DRONE_COMMIT > artefacts/glibc-bin-$GLIBC_VERSION-0-$(uname -m).tar.gz
+
+  - name: Upload Github release
+    image: golang:alpine
+    environment:
+      GITHUB_TOKEN:
+        from_secret: GITHUB_TOKEN
+    commands:
+      - apk add --no-cache git openssh-client
+      - go get -v github.com/tcnksm/ghr
+      - ghr -r $DRONE_REPO_NAME -u $DRONE_REPO_OWNER --prerelease --delete unreleased artefacts
+
+services:
+  - name: Start Docker
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
