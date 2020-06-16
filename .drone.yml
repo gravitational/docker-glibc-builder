@@ -24,6 +24,8 @@ steps:
       - name: dockersock
         path: /var/run
     commands:
+      # wait for docker to start
+      - sleep 5
       - cd /docker-glibc-builder
       - mkdir -p artefacts
       - docker build . --tag sgerrand/glibc-builder:$DRONE_COMMIT
@@ -50,6 +52,6 @@ services:
 
 ---
 kind: signature
-hmac: 1dfdd73783bac7ed19a3b07aceb0ae76282597aaf6008803315d3243450341a9
+hmac: 2bed29956280af4f3acc1a02a74ea739d52f3f599985f4e918198c3b247f97b0
 
 ...
