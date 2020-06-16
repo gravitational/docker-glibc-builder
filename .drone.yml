@@ -17,7 +17,7 @@ workspace:
 
 steps:
   - name: Check out code
-    image: golang:alpine
+    image: docker:git
     commands:
       - mkdir -p /docker-glibc-builder/artefacts
       - cd /docker-glibc-builder
@@ -57,6 +57,6 @@ services:
 
 ---
 kind: signature
-hmac: aaa9da2bd9cc85dfe096f9df9c659af38be56f181158a346c6796f1094662dfc
+hmac: 52a629b686995253711b7702a73aa7305938871a772625ac056fc75a651afe17
 
 ...
