@@ -4,6 +4,9 @@ type: kubernetes
 name: build
 
 trigger:
+  branch:
+    - master
+    - branch/*
   event:
     exclude:
       - promote
@@ -45,6 +48,6 @@ services:
 
 ---
 kind: signature
-hmac: ef931f31ff98e00185f8bd77ea5528136d9dbfa0d2ca110ee9e26eeef9a171bf
+hmac: d7f37cb5c972f51bbf42302f96f3a393471dc4cc0fdd360500137914b86439f5
 
 ...
