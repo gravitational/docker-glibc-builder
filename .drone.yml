@@ -19,7 +19,7 @@ steps:
   - name: Check out code
     image: docker:git
     commands:
-      - mkdir -p /docker-glibc-builder/artefacts
+      - mkdir -p /docker-glibc-builder
       - cd /docker-glibc-builder
       - git clone https://github.com/gravitational/docker-glibc-builder.git .
       - git checkout $DRONE_COMMIT
@@ -33,6 +33,7 @@ steps:
         path: /var/run
     commands:
       - cd /docker-glibc-builder
+      - mkdir -p artefacts
       - docker build . --tag sgerrand/glibc-builder:$DRONE_COMMIT
       - docker run --rm --env STDOUT=1 sgerrand/glibc-builder:$DRONE_COMMIT > artefacts/glibc-bin-$GLIBC_VERSION-0-$(uname -m).tar.gz
 
@@ -57,6 +58,6 @@ services:
 
 ---
 kind: signature
-hmac: 52a629b686995253711b7702a73aa7305938871a772625ac056fc75a651afe17
+hmac: 476ae4e94df2dbb938fc382e2e981532546106251e1266ea9a02e80dd75b7eff
 
 ...
