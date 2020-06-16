@@ -16,14 +16,6 @@ workspace:
   path: /docker-glibc-builder
 
 steps:
-  - name: Check out code
-    image: docker:git
-    commands:
-      - mkdir -p /docker-glibc-builder
-      - cd /docker-glibc-builder
-      - git clone https://github.com/gravitational/docker-glibc-builder.git .
-      - git checkout $DRONE_COMMIT
-      
   - name: Build package
     image: docker:git
     environment:
@@ -58,6 +50,6 @@ services:
 
 ---
 kind: signature
-hmac: 476ae4e94df2dbb938fc382e2e981532546106251e1266ea9a02e80dd75b7eff
+hmac: 1dfdd73783bac7ed19a3b07aceb0ae76282597aaf6008803315d3243450341a9
 
 ...
