@@ -25,7 +25,7 @@ steps:
         path: /var/run
     commands:
       # wait for docker to start
-      - sleep 5
+      - sleep 3
       - cd /docker-glibc-builder
       - mkdir -p artefacts
       - docker build . --tag sgerrand/glibc-builder:$DRONE_COMMIT
@@ -36,6 +36,9 @@ steps:
     environment:
       GITHUB_TOKEN:
         from_secret: GITHUB_TOKEN
+    volumes:
+      - name: dockersock
+        path: /var/run
     commands:
       - cd /docker-glibc-builder
       - apk add --no-cache git openssh-client
@@ -50,8 +53,12 @@ services:
       - name: dockersock
         path: /var/run
 
+volumes:
+  - name: dockersock
+    temp: {}
+
 ---
 kind: signature
-hmac: 2bed29956280af4f3acc1a02a74ea739d52f3f599985f4e918198c3b247f97b0
+hmac: 5ed8b4a1a810113dff3dd4017d326dc240a818b169645b123f5599496aeed546
 
 ...
