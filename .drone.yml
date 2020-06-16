@@ -13,9 +13,17 @@ trigger:
       - rollback
 
 workspace:
-  path: ~/docker-glibc-builder
+  path: /docker-glibc-builder
 
 steps:
+  - name: Check out code
+    image: golang:alpine
+    commands:
+      - mkdir -p /docker-glibc-builder/artefacts
+      - cd /docker-glibc-builder
+      - git clone https://github.com/gravitational/docker-glibc-builder.git .
+      - git checkout $DRONE_COMMIT
+      
   - name: Build package
     image: docker:git
     environment:
@@ -24,7 +32,7 @@ steps:
       - name: dockersock
         path: /var/run
     commands:
-      - mkdir -p artefacts
+      - cd /docker-glibc-builder
       - docker build . --tag sgerrand/glibc-builder:$DRONE_COMMIT
       - docker run --rm --env STDOUT=1 sgerrand/glibc-builder:$DRONE_COMMIT > artefacts/glibc-bin-$GLIBC_VERSION-0-$(uname -m).tar.gz
 
@@ -34,6 +42,7 @@ steps:
       GITHUB_TOKEN:
         from_secret: GITHUB_TOKEN
     commands:
+      - cd /docker-glibc-builder
       - apk add --no-cache git openssh-client
       - go get -v github.com/tcnksm/ghr
       - ghr -r $DRONE_REPO_NAME -u $DRONE_REPO_OWNER --prerelease --delete unreleased artefacts
@@ -48,6 +57,6 @@ services:
 
 ---
 kind: signature
-hmac: d7f37cb5c972f51bbf42302f96f3a393471dc4cc0fdd360500137914b86439f5
+hmac: aaa9da2bd9cc85dfe096f9df9c659af38be56f181158a346c6796f1094662dfc
 
 ...
