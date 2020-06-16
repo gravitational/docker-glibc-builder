@@ -29,7 +29,7 @@ steps:
       - cd /docker-glibc-builder
       - mkdir -p artefacts
       - docker build . --tag sgerrand/glibc-builder:$DRONE_COMMIT
-      - docker run --rm --env STDOUT=1 sgerrand/glibc-builder:$DRONE_COMMIT > artefacts/glibc-bin-$GLIBC_VERSION-0-$(uname -m).tar.gz
+      - docker run --rm --env STDOUT=1 --env MAKEFLAGS=-j$(nproc) sgerrand/glibc-builder:$DRONE_COMMIT > artefacts/glibc-bin-$GLIBC_VERSION-0-$(uname -m).tar.gz
 
   - name: Upload Github release
     image: golang:alpine
@@ -59,6 +59,6 @@ volumes:
 
 ---
 kind: signature
-hmac: 98719a607f873f5032ffff47092e33428e96254f3e955d3ab19228e6dd6e9960
+hmac: 9b7aa1d78ba86e04fae22555b2c49ac0b49ebf4faa40b429f8637e4590278569
 
 ...
